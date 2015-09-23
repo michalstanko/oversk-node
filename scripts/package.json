@@ -1,0 +1,11 @@
+{
+  "name": "oversk-domain-getter",
+  "version": "1.0.0",
+  "description": "Download domains archive from SK-NIC, extract, store them in the database",
+  "main": "getdomains.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Michal Stankoviansky <michal@stankoviansky.com>",
+  "license": "ISC"
+}
