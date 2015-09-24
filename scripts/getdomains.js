@@ -1,9 +1,9 @@
 var downloadDomainsArchive = require('./download-domains-archive');
 var extractGz = require('./extract-gz');
 
-var IS_DEV_MODE = process.env.MODE === "dev";
-var DOMAINS_ARCHIVE_URL = 'https://www.sk-nic.sk/documents/domeny_1.txt.gz';
-var DOMAINS_ARCHIVE_FILENAME = 'domains-{{time}}.txt.gz';
+const isDevMode              = process.env.MODE === "dev";
+const domainsArchiveUrl      = 'https://www.sk-nic.sk/documents/domeny_1.txt.gz';
+const domainsArchiveFilename = 'domains-{{time}}.txt.gz';
 
 var getTimeString = function (dateObj) {
 	return dateObj.toISOString().replace(/[\.:]/g, '-');
@@ -15,7 +15,7 @@ var getDomainsArchiveFilename = function (filenameTmpl) {
 
 // Mock file download for development purposes
 // to prevent re-downloading the file every time:
-if (process.env.MODE === "dev") {
+if (isDevMode) {
 	downloadDomainsArchive = function () {
 		return new Promise(function (resolve, reject) {
 			resolve({
@@ -25,7 +25,7 @@ if (process.env.MODE === "dev") {
 	};
 }
 
-downloadDomainsArchive(DOMAINS_ARCHIVE_URL, getDomainsArchiveFilename(DOMAINS_ARCHIVE_FILENAME))
+downloadDomainsArchive(domainsArchiveUrl, getDomainsArchiveFilename(domainsArchiveFilename))
 .then(function (output) {
 	console.log('looks like the file download is finished: ', output);
 	var to = output.path.replace('.gz', '');
