@@ -16,13 +16,7 @@ var getDomainsArchiveFilename = function (filenameTmpl) {
 // Mock file download for development purposes
 // to prevent re-downloading the file every time:
 if (isDevMode) {
-	downloadDomainsArchive = function () {
-		return new Promise(function (resolve, reject) {
-			resolve({
-				path: 'domains-2015-09-19T13-54-16-566Z.txt.gz'
-			});
-		});
-	};
+	downloadDomainsArchive = require('./download-domains-archive-mock');
 }
 
 downloadDomainsArchive(domainsArchiveUrl, getDomainsArchiveFilename(domainsArchiveFilename))
