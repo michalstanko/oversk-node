@@ -1,5 +1,5 @@
-var downloadDomainsArchive = require('./download-domains-archive');
-var extractGz = require('./extract-gz');
+var downloadDomains = require('./downloadDomains');
+var extractGz = require('./extractGz');
 
 const isDevMode              = process.env.MODE === "dev";
 const domainsArchiveUrl      = 'https://www.sk-nic.sk/documents/domeny_1.txt.gz';
@@ -16,10 +16,10 @@ var getDomainsArchiveFilename = function (filenameTmpl) {
 // Mock file download for development purposes
 // to prevent re-downloading the file every time:
 if (isDevMode) {
-	downloadDomainsArchive = require('./download-domains-archive-mock');
+	downloadDomains = require('./downloadDomainsMock');
 }
 
-downloadDomainsArchive(domainsArchiveUrl, getDomainsArchiveFilename(domainsArchiveFilename))
+downloadDomains(domainsArchiveUrl, getDomainsArchiveFilename(domainsArchiveFilename))
 .then(function (output) {
 	console.log('looks like the file download is finished: ', output);
 	var to = output.path.replace('.gz', '');
