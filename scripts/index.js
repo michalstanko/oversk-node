@@ -23,13 +23,14 @@ if (isDevMode) {
 // This is where the magic happens:
 downloadDomains(domainsArchiveUrl, getDomainsArchiveFilename(domainsArchiveFilename))
 .then(function (output) {
-	var to = output.path.replace('.gz', '');
-	return extractGz(output.path, to);
+	var extractTo = output.path.replace('.gz', '');
+	return extractGz(output.path, extractTo);
 }).then(function (output) {
 	console.log('Extracted archive to %s', output.path);
 	return readDomains(output.path);
-}).then(function (out) {
-	var domains = out.domains;
+}).then(function (output) {
+	// TODO: insert domains into DB here...
+	var domains = output.domains;
 	console.log(domains.length);
 }).catch(function (err) {
 	console.log('Error: ', err);
