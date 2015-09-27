@@ -1,3 +1,5 @@
 node_modules
 *.txt.gz
 dom*.txt
+
+scripts/run.sh
