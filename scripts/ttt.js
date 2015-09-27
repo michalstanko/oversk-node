@@ -34,6 +34,20 @@ var connectionConfig = {
 
 var connection = mysql.createConnection(connectionConfig);
 
-var sql = "SELECT * ";
+connection.connect(function (err) {
+	if (err) {
+		console.log("Error: ", err);
+	}
+});
 
-connection.query();
+var sql = "SELECT * FROM domains";
+connection.query(sql, function (err, rows, fields) {
+	if (err) {
+		throw err;
+	}
+
+	console.log("Num of rows: %s", rows.length);
+
+});
+
+connection.end();
