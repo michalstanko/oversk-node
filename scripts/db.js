@@ -44,7 +44,7 @@ module.exports.insertDomains = function (domains) {
 
 	return deleteDomains().then(function (output) {
 		return new Promise(function (resolve, reject) {
-			connection.query(sql.insert, insertData, function (err, result) {
+			connection.query(sql.insert, [insertData], function (err, result) {
 				if (err) {
 					reject(err);
 					return;
