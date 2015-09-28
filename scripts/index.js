@@ -1,6 +1,7 @@
 var downloadDomains = require('./downloadDomains');
 var extractGz       = require('./extractGz');
 var readDomains     = require('./readDomains');
+var db              = require('./db.js');
 
 const isDevMode              = process.env.MODE === "dev";
 const domainsArchiveUrl      = 'https://www.sk-nic.sk/documents/domeny_1.txt.gz';
@@ -31,7 +32,12 @@ downloadDomains(domainsArchiveUrl, getDomainsArchiveFilename(domainsArchiveFilen
 }).then(function (output) {
 	// TODO: insert domains into DB here...
 	var domains = output.domains;
+	// TODO: this is just temporary dev stuff:
 	console.log(domains.length);
+	return db.insertDomains(domains);
+}).then(function (output) {
+	// MySQL (unfinished) operations output:
+	console.log(output);
 }).catch(function (err) {
 	console.log('Error: ', err);
 });
