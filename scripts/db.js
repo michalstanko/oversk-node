@@ -1,20 +1,9 @@
-var mysql = require('mysql');
-
-// MySQL connection settings (read from env vars):
-var connectionConfig = {
-	host: process.env.DB_HOST,
-	user: process.env.DB_USER,
-	password: process.env.DB_PASS,
-	database: process.env.DB_NAME,
-};
+var connection = require('./dbConnect');
 
 var sql = {
 	delete: "DELETE FROM domains",
 	insert: "INSERT INTO domains (domain_name) VALUES ?"
 };
-
-// MySQL connection:
-var connection = mysql.createConnection(connectionConfig);
 
 // Empty the domains table
 // Resolves with the number of deleted rows.
