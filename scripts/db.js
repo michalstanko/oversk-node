@@ -1,4 +1,4 @@
-var connection = require('./dbConnect');
+var connection = require('./dbConnection');
 
 var sql = {
 	delete: "DELETE FROM domains",
