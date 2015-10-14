@@ -1,6 +1,7 @@
 // Dummy file for running quick tests
 // Enter anything here...
 var connection = require('./dbConnection');
+var db = require('./db');
 var query = require('./query');
 
 // Some dummy data...:
@@ -13,6 +14,30 @@ var domains = [
 	},
 	{
 		name: '000.sk',
+		registrarId: 'ABCD-0001',
+		ownerId: 'ABCD-0001',
+		status: 'DOM_OK'
+	},
+	{
+		name: 'abeceda.sk',
+		registrarId: 'ABCD-0001',
+		ownerId: 'ABCD-0001',
+		status: 'DOM_OK'
+	},
+	{
+		name: 'alicante.sk',
+		registrarId: 'ABCD-0001',
+		ownerId: 'ABCD-0001',
+		status: 'DOM_OK'
+	},
+	{
+		name: 'cukor.sk',
+		registrarId: 'ABCD-0001',
+		ownerId: 'ABCD-0001',
+		status: 'DOM_OK'
+	},
+	{
+		name: 'denia.sk',
 		registrarId: 'ABCD-0001',
 		ownerId: 'ABCD-0001',
 		status: 'DOM_OK'
@@ -36,6 +61,48 @@ var domains = [
 		status: 'DOM_OK'
 	},
 	{
+		name: 'opera.sk',
+		registrarId: 'ABCD-0001',
+		ownerId: 'ABCD-0001',
+		status: 'DOM_OK'
+	},
+	{
+		name: 'preco.sk',
+		registrarId: 'ABCD-0001',
+		ownerId: 'ABCD-0001',
+		status: 'DOM_OK'
+	},
+	{
+		name: 'qqq.sk',
+		registrarId: 'ABCD-0001',
+		ownerId: 'ABCD-0001',
+		status: 'DOM_OK'
+	},
+	{
+		name: 'rrrr.sk',
+		registrarId: 'ABCD-0001',
+		ownerId: 'ABCD-0001',
+		status: 'DOM_OK'
+	},
+	{
+		name: 'trnava.sk',
+		registrarId: 'ABCD-0001',
+		ownerId: 'ABCD-0001',
+		status: 'DOM_OK'
+	},
+	{
+		name: 'ttt.sk',
+		registrarId: 'ABCD-0001',
+		ownerId: 'ABCD-0001',
+		status: 'DOM_OK'
+	},
+	{
+		name: 'zaracha.sk',
+		registrarId: 'MICH-0598',
+		ownerId: 'MICH-0598',
+		status: 'DOM_OK'
+	},
+	{
 		name: 'zzz.sk',
 		registrarId: 'MICH-0598',
 		ownerId: 'MICH-0598',
@@ -43,28 +110,25 @@ var domains = [
 	}
 ];
 
-var insertData = domains.map(function (item) {
-	return [item.name];
-});
-
 var sql = {
 	delete: "DELETE FROM domains",
+	reset:  "ALTER TABLE domains AUTO_INCREMENT = 1",
 	insert: "INSERT INTO domains (domain_name) VALUES ?"
 };
 
-console.log(insertData);
-
-query(connection, sql.delete)
+db.deleteDomains()
+.then(db.resetDomainsTable)
 .then(function () {
-	return query(connection, sql.insert, insertData);
-}).then(function (result) {
-	console.log('insert result: ', result);
+	// TODO: make this prettier
+	return db.insertDomains(domains);
+})
+.then(function (result) {
+	console.log('INSERT result:\n', result);
 	connection.end();
 }).catch(function (err) {
 	console.log('error: ', err);
 	connection.end();
 });
-
 
 /*
 connection.query(sql.delete, function (err, result) {
