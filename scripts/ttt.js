@@ -129,19 +129,3 @@ db.deleteDomains()
 }).then(function () {
 	connection.end();
 });
-
-/*
-connection.query(sql.delete, function (err, result) {
-	if (err) {
-		return console.log(err);
-	}
-	console.log(result);
-	connection.query(sql.insert, [insertData], function (err, result) {
-		if (err) {
-			return console.log(err);
-		}
-		console.log(result);
-	});
-	connection.end();
-});
-*/

@@ -14,7 +14,6 @@ var sql = {
 // Resolves with the number of deleted rows.
 var deleteDomains = function () {
 	return query(connection, sql.delete).then(function (result) {
-		console.log('deleteDomains - then() called', result);
 		return {
 			numDeletedRows: result.affectedRows
 		};
@@ -27,7 +26,6 @@ module.exports.deleteDomains = deleteDomains;
 // Reset AUTO_INCREMENT value
 var resetDomainsTable = function () {
 	return query(connection, sql.reset).then(function (result) {
-		console.log('resetDomainsTable - then() called', result);
 		return {
 			resetSuccess: true
 		};
@@ -50,40 +48,16 @@ module.exports.insertDomains = function (domains) {
 	var slicedInsertData = sliceArray(insertData, insertDataSliceLength);
 
 	// TODO: call deleteDomains() and resetDomainsTable() here...
-
 	return Promise.all(slicedInsertData.map(function (data) {
 		return query(connection, sql.insert, data);
 	})).then(function (result) {
-		console.log('insertDomains - Promise.all - then() called', result);
-		return result;
-	});
-
-	/*
-	return deleteDomains().then(function (output) {
 		var numInsertedRows = 0;
-		return new Promise(function (resolve, reject) {
-			// TODO: doesn't work!
-			// TODO: MySQL connection not closed correctly
-			insertData.forEach(function (data) {
-				connection.query(sql.insert, [data], function (err, result) {
-					if (err) {
-						reject(err);
-					} else {
-						numInsertedRows += result.affectedRows;
-					}
-				});
-			});
-
-			resolve({
-				numDeletedRows: output.numDeletedRows,
-				numInsertedRows: numInsertedRows
-			});
-
-		}).then(function () {
-			// TODO this is probably not closing connections correctly
-			// when there's an error - check!!!
-			connection.end();
-		}); // end: new Promise
+		result.forEach(function (item) {
+			numInsertedRows += item.affectedRows;
+		});
+		return {
+			numInsertedRows: numInsertedRows
+		};
 	});
-	*/
+
 };
