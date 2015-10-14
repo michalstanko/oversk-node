@@ -124,9 +124,9 @@ db.deleteDomains()
 })
 .then(function (result) {
 	console.log('INSERT result:\n', result);
-	connection.end();
 }).catch(function (err) {
 	console.log('error: ', err);
+}).then(function () {
 	connection.end();
 });
 
