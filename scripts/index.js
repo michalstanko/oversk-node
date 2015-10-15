@@ -27,16 +27,13 @@ downloadDomains(domainsArchiveUrl, getDomainsArchiveFilename(domainsArchiveFilen
 	var extractTo = output.path.replace('.gz', '');
 	return extractGz(output.path, extractTo);
 }).then(function (output) {
-	console.log('Extracted archive to %s', output.path);
 	return readDomains(output.path);
 }).then(function (output) {
-	// TODO: insert domains into DB here...
+	// DB insert:
 	var domains = output.domains;
-	// TODO: this is just temporary dev stuff:
-	console.log(domains.length);
 	return db.insertDomains(domains);
 }).then(function (output) {
-	// MySQL (unfinished) operations output:
+	// DB-insert output:
 	console.log(output);
 }).catch(function (err) {
 	console.log('Error: ', err);
@@ -45,10 +42,10 @@ downloadDomains(domainsArchiveUrl, getDomainsArchiveFilename(domainsArchiveFilen
 /*
 The plan is:
 
-downloadDomains()
-.then(extractDomains)
-.then(parseDomainsFile)
-.then(insertDomains)
-.then(updateModifiedDate)
-.then(sendEmailReport);
+downloadDomains() DONE
+.then(extractDomains) DONE
+.then(parseDomainsFile) DONE
+.then(insertDomains) DONE
+.then(updateModifiedDate) TODO
+.then(sendEmailReport); TODO
 */

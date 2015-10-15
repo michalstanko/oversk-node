@@ -1,8 +1,9 @@
 var connection = require('./dbConnection');
-var query = require('./query');
+var query      = require('./query');
 var sliceArray = require('./sliceArray');
 
-const insertDataSliceLength = 3;
+
+const insertDataSliceLength = 3000;
 
 var sql = {
 	delete: "DELETE FROM domains",
@@ -20,9 +21,6 @@ var deleteDomains = function () {
 	});
 };
 
-// TODO: hide this function
-module.exports.deleteDomains = deleteDomains;
-
 // Reset AUTO_INCREMENT value
 var resetDomainsTable = function () {
 	return query(connection, sql.reset).then(function (result) {
@@ -32,12 +30,13 @@ var resetDomainsTable = function () {
 	});
 };
 
-// TODO: hide this function
-module.exports.resetDomainsTable = resetDomainsTable;
-
 // Insert domains:
 // domains (Array): array of domains (objects with properties)
 // Resolves with the number of inserted rows.
+// 
+// TODO: add number of rows deleted before the insert
+//       to the final resolved value
+//
 module.exports.insertDomains = function (domains) {
 	// Prepare the array with data - will be passed to MySQL query:
 	var insertData = domains.map(function (item) {
@@ -47,10 +46,17 @@ module.exports.insertDomains = function (domains) {
 	// Prepare slices (to avoid MySQL's 'ER_NET_PACKET_TOO_LARGE' error)
 	var slicedInsertData = sliceArray(insertData, insertDataSliceLength);
 
-	// TODO: call deleteDomains() and resetDomainsTable() here...
-	return Promise.all(slicedInsertData.map(function (data) {
-		return query(connection, sql.insert, data);
-	})).then(function (result) {
+	return deleteDomains()   // 1. delete all rows
+	.then(resetDomainsTable) // 2. reset auto_increment
+	.then(function () {      // 3. insert...
+		return Promise.all(slicedInsertData.map(function (data) {
+			return query(connection, sql.insert, data);
+		}));
+	}).then(function (result) {
+		// Terminate the connection and pass the original result:
+		connection.end();
+		return result;
+	}).then(function (result) {
 		var numInsertedRows = 0;
 		result.forEach(function (item) {
 			numInsertedRows += item.affectedRows;
@@ -59,5 +65,4 @@ module.exports.insertDomains = function (domains) {
 			numInsertedRows: numInsertedRows
 		};
 	});
-
 };

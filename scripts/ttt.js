@@ -116,12 +116,7 @@ var sql = {
 	insert: "INSERT INTO domains (domain_name) VALUES ?"
 };
 
-db.deleteDomains()
-.then(db.resetDomainsTable)
-.then(function () {
-	// TODO: make this prettier
-	return db.insertDomains(domains);
-})
+db.insertDomains(domains)
 .then(function (result) {
 	console.log('INSERT result:\n', result);
 }).catch(function (err) {
