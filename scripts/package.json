@@ -6,6 +6,7 @@
   "author": "Michal Stankoviansky <michal@stankoviansky.com>",
   "dependencies": {
     "extend": "^3.0.0",
-    "mysql": "^2.9.0"
+    "mysql": "^2.9.0",
+    "nodemailer": "^1.8.0"
   }
 }
