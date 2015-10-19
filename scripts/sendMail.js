@@ -1,15 +1,8 @@
-var nodemailer = require('nodemailer');
+var nodemailer = require('mailgun');
 
 const user = process.env.EMAIL_USER;
 const pass = process.env.EMAIL_PASS;
-
-var transporter = nodemailer.createTransport({
-	service: 'Gmail',
-	auth: {
-		user: user,
-		pass: pass
-	}
-});
+const apiKey = process.env.MAILGUN_API_KEY;
 
 module.exports = function (options) {
 	return new Promise(function (resolve, reject) {
