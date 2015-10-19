@@ -1,16 +1,18 @@
-var nodemailer = require('mailgun');
+/*
+Send email through mailgun.com API
+*/
+const apiKey  = process.env.MAILGUN_API_KEY;
+const domain  = process.env.MAILGUN_DOMAIN;
 
-const user = process.env.EMAIL_USER;
-const pass = process.env.EMAIL_PASS;
-const apiKey = process.env.MAILGUN_API_KEY;
+var mailgun = require('mailgun-js')({ apiKey: apiKey, domain: domain });
 
 module.exports = function (options) {
 	return new Promise(function (resolve, reject) {
-		transporter.sendMail(options, function (err, info) {
+		mailgun.messages().send(options, function (err, body) {
 			if (err) {
 				reject(err);
 			} else {
-				resolve(info);
+				resolve(body);
 			}
 		});
 	});
