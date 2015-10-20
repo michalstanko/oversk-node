@@ -3,11 +3,14 @@ var extractGz       = require('./extractGz');
 var readDomains     = require('./readDomains');
 var db              = require('./db.js');
 var sendMail        = require('./sendMail');
+var log             = require('./log');
 
 const isDevMode              = process.env.MODE === "dev";
 const domainsArchiveUrl      = 'https://www.sk-nic.sk/documents/domeny_1.txt.gz';
 const domainsArchiveFilename = 'domains-{{time}}.txt.gz';
 const emailAddress           = process.env.EMAIL_USER;
+
+var store = {}; // will contain results of various operations
 
 var getTimeString = function (dateObj) {
 	return dateObj.toISOString().replace(/[\.:]/g, '-');
@@ -35,6 +38,7 @@ downloadDomains(domainsArchiveUrl, getDomainsArchiveFilename(domainsArchiveFilen
 	var domains = output.domains;
 	return db.insertDomains(domains);
 }).then(function (output) {
+	store.numInsertedRows = output.numInsertedRows;
 	// Send DB-insert report:
 	return sendMail({
 		from: emailAddress,
@@ -43,10 +47,19 @@ downloadDomains(domainsArchiveUrl, getDomainsArchiveFilename(domainsArchiveFilen
 		text: 'numInsertedRows: ' + output.numInsertedRows
 	});
 }).then(function (output) {
-	// Mailgun send mail output:
-	console.log('Mailgun: ', output);
+	// TODO: Everything below is a mess at this moment
+	// Mailgun - mail sent successfully:
+	store.emailReportSent = true;
+}).catch(function (err) {
+	console.log('email error', err);
+	store.emailReportSent = false;
 }).catch(function (err) {
 	console.log('Error: ', err);
+}).then(function () {
+	var isoDateTime = (new Date()).toISOString();
+	log('log/insertdomains.log', isoDateTime + "\tInserted: " + store.numInsertedRows + " domains\tEmail sent: " + store.emailReportSent);
+}).then(function () {
+	console.log('...done, thanks, bye...');
 });
 
 /*
@@ -57,5 +70,5 @@ downloadDomains() DONE
 .then(parseDomainsFile) DONE
 .then(insertDomains) DONE
 .then(updateModifiedDate) TODO
-.then(sendEmailReport); TODO
+.then(sendEmailReport); DONE
 */
