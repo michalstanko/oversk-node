@@ -8,9 +8,9 @@ Each line of domains list has 11 fields:
 04. NEW/OLD
 05. Status
 06. Name server 1
-07. Name server 1
-08. Name server 1
-09. Name server 1
+07. Name server 2
+08. Name server 3
+09. Name server 4
 10. ICO (Slovak business registration number)
 11. Valid to (date)
 
