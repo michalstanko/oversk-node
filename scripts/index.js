@@ -51,9 +51,6 @@ downloadDomains(domainsArchiveUrl, getDomainsArchiveFilename(domainsArchiveFilen
 	// Mailgun - mail sent successfully:
 	store.emailReportSent = true;
 }).catch(function (err) {
-	console.log('email error', err);
-	store.emailReportSent = false;
-}).catch(function (err) {
 	console.log('Error: ', err);
 }).then(function () {
 	var isoDateTime = (new Date()).toISOString();
