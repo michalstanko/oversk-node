@@ -3,5 +3,6 @@ node_modules
 dom*.txt
 
 scripts/run.sh
+scripts/rt.sh
 scripts/log
 
