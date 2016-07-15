@@ -26,6 +26,15 @@ if (isDevMode) {
 	downloadDomains = require('./downloadDomainsMock');
 }
 
+var quickMail = function (subj, text) {
+	return sendMail({
+		from: emailAddress,
+		to: emailAddress,
+		subject: subj,
+		text: text ? text : ''
+	});
+};
+
 // This is where the magic happens:
 downloadDomains(domainsArchiveUrl, getDomainsArchiveFilename(domainsArchiveFilename))
 .then(function (output) {
