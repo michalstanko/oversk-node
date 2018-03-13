@@ -5,10 +5,10 @@ var db              = require('./db.js');
 var sendMail        = require('./sendMail');
 var log             = require('./log');
 
-const isDevMode              = process.env.MODE === "dev";
-const domainsArchiveUrl      = 'https://www.sk-nic.sk/documents/domeny_1.txt.gz';
-const domainsArchiveFilename = 'domains-{{time}}.txt.gz';
-const emailAddress           = process.env.EMAIL_USER;
+const isDevMode          = process.env.MODE === "dev";
+const domainsUrl         = 'https://sk-nic.sk/subory/domains.txt';
+const domainsFilenameTpl = 'domains-{{time}}.txt';
+const emailAddress       = process.env.EMAIL_USER;
 
 var store = {}; // will contain results of various operations
 
@@ -16,7 +16,7 @@ var getTimeString = function (dateObj) {
 	return dateObj.toISOString().replace(/[\.:]/g, '-');
 };
 
-var getDomainsArchiveFilename = function (filenameTmpl) {
+var getDomainsFilename = function (filenameTmpl) {
 	return filenameTmpl.replace('{{time}}', getTimeString(new Date()));
 };
 
@@ -36,13 +36,11 @@ var quickMail = function (subj, text) {
 };
 
 // This is where the magic happens:
-downloadDomains(domainsArchiveUrl, getDomainsArchiveFilename(domainsArchiveFilename))
+downloadDomains(domainsUrl, getDomainsFilename(domainsFilenameTpl))
 .then(function (output) {
-	var extractTo = output.path.replace('.gz', '');
-	return extractGz(output.path, extractTo);
-}).then(function (output) {
 	return readDomains(output.path);
 }).then(function (output) {
+	//console.log(output);
 	// DB insert:
 	var domains = output.domains;
 	return db.insertDomains(domains);
@@ -63,9 +61,11 @@ downloadDomains(domainsArchiveUrl, getDomainsArchiveFilename(domainsArchiveFilen
 	console.log('Error: ', err);
 }).then(function () {
 	var isoDateTime = (new Date()).toISOString();
-	log('log/insertdomains.log', isoDateTime + "\tInserted: " + store.numInsertedRows + " domains\tEmail sent: " + store.emailReportSent);
+	return log('log/insertdomains.log', isoDateTime + "\tInserted: " + store.numInsertedRows + " domains\tEmail sent: " + store.emailReportSent);
 }).then(function () {
 	console.log('...done, thanks, bye...');
+}).catch((err) => {
+	console.log('Error: ', err);
 });
 
 /*
