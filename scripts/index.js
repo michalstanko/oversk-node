@@ -4,11 +4,13 @@ var readDomains     = require('./readDomains');
 var db              = require('./db.js');
 var sendMail        = require('./sendMail');
 var log             = require('./log');
+var updateCount     = require('./updateDomainCount');
 
 const isDevMode          = process.env.MODE === "dev";
 const domainsUrl         = 'https://sk-nic.sk/subory/domains.txt';
 const domainsFilenameTpl = 'domains-{{time}}.txt';
 const emailAddress       = process.env.EMAIL_USER;
+const htmlFile           = process.env.HTML_FILE;
 
 var store = {}; // will contain results of various operations
 
@@ -61,7 +63,9 @@ downloadDomains(domainsUrl, getDomainsFilename(domainsFilenameTpl))
 	console.log('Error: ', err);
 }).then(function () {
 	var isoDateTime = (new Date()).toISOString();
-	return log('log/insertdomains.log', isoDateTime + "\tInserted: " + store.numInsertedRows + " domains\tEmail sent: " + store.emailReportSent);
+    log('log/insertdomains.log', isoDateTime + "\tInserted: " + store.numInsertedRows + " domains\tEmail sent: " + store.emailReportSent);
+}).then(function () {
+    return updateCount(htmlFile, '#numDomains', store.numInsertedRows);
 }).then(function () {
 	console.log('...done, thanks, bye...');
 }).catch((err) => {
