@@ -11,6 +11,7 @@ const domainsUrl         = 'https://sk-nic.sk/subory/domains.txt';
 const domainsFilenameTpl = 'domains-{{time}}.txt';
 const emailAddress       = process.env.EMAIL_USER;
 const htmlFile           = process.env.HTML_FILE;
+const regexDomainCount   = /<span id="numDomains">((\d{1,3}[ ]?)*\d{1,3})<\/span>/;
 
 var store = {}; // will contain results of various operations
 
@@ -65,7 +66,7 @@ downloadDomains(domainsUrl, getDomainsFilename(domainsFilenameTpl))
 	var isoDateTime = (new Date()).toISOString();
     log('log/insertdomains.log', isoDateTime + "\tInserted: " + store.numInsertedRows + " domains\tEmail sent: " + store.emailReportSent);
 }).then(function () {
-    return updateCount(htmlFile, '#numDomains', store.numInsertedRows);
+    return updateCount(htmlFile, regexDomainCount, store.numInsertedRows);
 }).then(function () {
 	console.log('...done, thanks, bye...');
 }).catch((err) => {
